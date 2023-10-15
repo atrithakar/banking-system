@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 
+let currentCustomer = undefined
+
 mongoose.connect('mongodb://127.0.0.1:27017/BankingSystem');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
