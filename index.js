@@ -23,7 +23,8 @@ const port = 3000
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/',(req,res)=>{
-    res.sendFile(__dirname+'/index.html')
+
+    res.sendFile(__dirname+'/login.html')
 })
 app.get('/createacc',(req,res)=>{
     res.sendFile(__dirname+'/createacc.html')
@@ -44,7 +45,7 @@ app.get('/transfermoney',(req,res)=>{
 app.post('/createacc',(req,res)=>{
     let mydata = new customer(req.body)
     mydata.save().then(()=>{
-        res.sendFile(__dirname+'/createacc.html')
+        res.sendFile(__dirname+'/index.html')
         
     }).catch()
 })
@@ -59,6 +60,22 @@ app.post('/withdraw',(req,res)=>{
 })
 app.post('/transfermoney',(req,res)=>{
     res.sendFile(__dirname+'/transfermoney.html')
+})
+app.post('/',async (req,res)=>{
+    try {
+        currentCustomer = await customer.findOne({holdername: req.body.holdername})
+        if (currentCustomer.holdername===req.body.holdername) {
+            res.sendFile(__dirname+'/'+'index.html')
+        }
+        else {
+            res.sendFile(__dirname+'/'+'login.html')
+            
+        }
+    }
+    catch {
+        res.send("Something went wrong! Try again later!")
+    }
+    res.sendFile(__dirname+'/index.html')
 })
 
 
