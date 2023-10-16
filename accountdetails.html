@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+</head>
+<body>
+    <h1>Account Details</h1>
+    <div><span>Name: </span><span class="name"></span></div>
+    <div><span>Balance: </span><span class="balance"></span></div>
+    <script>
+        fetch('/api/details').then((response) => {
+            return response.json()
+        }).then((deposit) => {
+            // console.log(deposit)
+            document.getElementsByClassName("name")[0].innerText = deposit.holdername
+            document.getElementsByClassName("balance")[0].innerText = deposit.accbalance
+        })
+    </script>
+</body>
+</html>

@@ -4,6 +4,15 @@ const mongoose = require('mongoose')
 
 let currentCustomer = undefined
 
+const withdraw =  async(holdername, value) => {
+    const result=await customer.updateOne({holdername: holdername},{$inc: {accbalance: -value}})
+
+}
+const deposit =  async(holdername, value) => {
+    const result=await customer.updateOne({holdername: holdername},{$inc: {accbalance: value}})
+
+}
+
 mongoose.connect('mongodb://127.0.0.1:27017/BankingSystem');
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -22,60 +31,74 @@ const port = 3000
 
 app.use(express.urlencoded({ extended: true }))
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
 
-    res.sendFile(__dirname+'/login.html')
+    res.sendFile(__dirname + '/login.html')
 })
-app.get('/createacc',(req,res)=>{
-    res.sendFile(__dirname+'/createacc.html')
+app.get('/createacc', (req, res) => {
+    res.sendFile(__dirname + '/createacc.html')
 })
-app.get('/deleteacc',(req,res)=>{
-    res.sendFile(__dirname+'/deleteacc.html')
+app.get('/deleteacc', (req, res) => {
+    res.sendFile(__dirname + '/deleteacc.html')
 })
-app.get('/deposit',(req,res)=>{
-    res.sendFile(__dirname+'/deposit.html')
+app.get('/deposit', (req, res) => {
+    res.sendFile(__dirname + '/deposit.html')
 })
-app.get('/withdraw',(req,res)=>{
-    res.sendFile(__dirname+'/withdraw.html')
+app.get('/withdraw', (req, res) => {
+    res.sendFile(__dirname + '/withdraw.html')
 })
-app.get('/transfermoney',(req,res)=>{
-    res.sendFile(__dirname+'/transfermoney.html')
+app.get('/transfermoney', (req, res) => {
+    res.sendFile(__dirname + '/transfermoney.html')
+})
+app.get('/accountdetails', (req, res) => {
+    res.sendFile(__dirname + '/accountdetails.html')
+})
+app.get('/api/details',(req,res)=>{
+    
+    res.json(currentCustomer)
 })
 
-app.post('/createacc',(req,res)=>{
+app.post('/createacc', (req, res) => {
     let mydata = new customer(req.body)
-    mydata.save().then(()=>{
-        res.sendFile(__dirname+'/index.html')
-        
+    mydata.save().then(() => {
+        res.sendFile(__dirname + '/index.html')
+
     }).catch()
+    currentCustomer = mydata
+    console.log(currentCustomer)
 })
-app.post('/deleteacc',(req,res)=>{
-    res.sendFile(__dirname+'/deleteacc.html')
+app.post('/deleteacc', (req, res) => {
+    res.sendFile(__dirname + '/deleteacc.html')
 })
-app.post('/deposit',(req,res)=>{
-    res.sendFile(__dirname+'/deposit.html')
+app.post('/deposit', (req, res) => {
+    let money = req.body.accbalance
+    deposit(currentCustomer.holdername, money)
+    res.sendFile(__dirname + '/deposit.html')
 })
-app.post('/withdraw',(req,res)=>{
-    res.sendFile(__dirname+'/withdraw.html')
+app.post('/withdraw', (req, res) => {
+    let money = req.body.accbalance
+    withdraw(currentCustomer.holdername, money)
+    res.sendFile(__dirname + '/withdraw.html')
 })
-app.post('/transfermoney',(req,res)=>{
-    res.sendFile(__dirname+'/transfermoney.html')
+app.post('/transfermoney', (req, res) => {
+    res.sendFile(__dirname + '/transfermoney.html')
 })
-app.post('/',async (req,res)=>{
+app.post('/', async (req, res) => {
     try {
-        currentCustomer = await customer.findOne({holdername: req.body.holdername})
-        if (currentCustomer.holdername===req.body.holdername) {
-            res.sendFile(__dirname+'/'+'index.html')
+        currentCustomer = await customer.findOne({ holdername: req.body.holdername })
+        if (currentCustomer.holdername === req.body.holdername) {
+            res.sendFile(__dirname + '/' + 'index.html')
         }
         else {
-            res.sendFile(__dirname+'/'+'login.html')
-            
+            res.sendFile(__dirname + '/' + 'login.html')
+
         }
     }
     catch {
-        res.send("Something went wrong! Try again later!")
+        res.sendFile(__dirname + '/' + 'login.html')
     }
-    res.sendFile(__dirname+'/index.html')
+    console.log(currentCustomer)
+    res.sendFile(__dirname + '/index.html')
 })
 
 
