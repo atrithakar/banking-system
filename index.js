@@ -34,6 +34,7 @@ const customer = mongoose.model('customer', response);
 
 const hostname = '127.0.0.1'
 const port = 3000
+const myip = '192.168.43.236'
 
 app.use(express.urlencoded({ extended: true }))
 
@@ -127,7 +128,7 @@ app.post('/', async (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
 
-app.listen(port, hostname, () => {
+app.listen(port, myip, hostname, () => {
     console.log(`Server started on http://${hostname}:${port}/`)
 })
 
